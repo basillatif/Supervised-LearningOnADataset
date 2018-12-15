@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn import linear_model, preprocessing, tree
-from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, KBinsDiscretizer
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score
 
@@ -21,6 +21,7 @@ ohe = OneHotEncoder(sparse=False)
 ordinal = OrdinalEncoder()
 encoder = le
 
+# fine tuning the data in preprocessing:
 for x in COLUMNS:
     if df_train[x].dtypes == 'object':
         df_train_2d = df_train[[x]].copy()
@@ -28,7 +29,12 @@ for x in COLUMNS:
         df_train[x] = encoder.fit_transform(df_train_2d)
         df_test[x] = encoder.fit_transform(df_test_2d)
 
-print(df_train)
-# clf = DecisionTreeClassifier(random_state=0)
-# score = cross_val_score(clf, df_train, COLUMNS)
-# X = [[25, Private, 11th, 7, Never-married, Machine-op-inspect, Own-child, Black, Male, 0, 0, 40, United-States, <=50k]]
+# train the data set
+y = df_train.iloc[:, 13]
+x = df_train.iloc[:, 1:13]
+trainingDataTrained = DecisionTreeClassifier(random_state=0)
+trainingDataTrained.fit(x, y)
+
+# test the accuracy of the trained model with the test dataset
+accuracy = trainingDataTrained.score(df_test.iloc[:, 1:13], df_test.iloc[:, 13])  # noqa: E501
+print('the accuracy of the trained model is {:.2f}'.format(accuracy*100))
