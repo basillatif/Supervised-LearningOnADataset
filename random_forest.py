@@ -1,8 +1,8 @@
+import numpy as np
 import pandas as pd
-from sklearn import preprocessing
-from sklearn.preprocessing import KBinsDiscretizer
-from sklearn.tree import DecisionTreeClassifier
-# from sklearn.model_selection import cross_val_score
+from sklearn import linear_model, preprocessing, tree
+from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, KBinsDiscretizer  # noqa: E501
+from sklearn.ensemble import RandomForestClassifier
 
 
 COLUMNS = ["age", "work class", "education", "education-num", "marital_status", "occ_code", "relationship", "race", "sex", "cap_gain", "cap_loss", "hours_per_week", "native_country", "income"]  # noqa: E501
@@ -16,8 +16,8 @@ df_train.fillna(-99999)
 df_test.fillna(-99999)
 
 le = preprocessing.LabelEncoder()
-# ohe = OneHotEncoder(sparse=False)
-# ordinal = OrdinalEncoder()
+ohe = OneHotEncoder(sparse=False)
+ordinal = OrdinalEncoder()
 encoder = le
 
 # fine tuning the data in preprocessing:
@@ -31,7 +31,7 @@ for x in COLUMNS:
 # train the data set
 y = df_train.iloc[:, 13]
 x = df_train.iloc[:, 1:13]
-trainingDataTrained = DecisionTreeClassifier(random_state=0)
+trainingDataTrained = RandomForestClassifier(random_state=0)
 trainingDataTrained.fit(x, y)
 
 # test the accuracy of the trained model with the test dataset
